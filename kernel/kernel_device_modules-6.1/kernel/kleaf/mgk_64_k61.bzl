@@ -49,8 +49,13 @@ mgk_64_k61_kleaf_modules = [
     "//vendor/mediatek/kernel_modules/connectivity/wlan/core/gen4m/build/connac3x/6989_6639_mp2:wlan_drv_gen4m_6989_6639_mp2",
     "//vendor/mediatek/kernel_modules/cpufreq_cus:cpu_freq",
     "//vendor/mediatek/kernel_modules/cpufreq_int:cpu_hwtest",
-    "//vendor/mediatek/kernel_modules/fpsgo_cus:fpsgo_cus",
-    "//vendor/mediatek/kernel_modules/fpsgo_int:fpsgo_int",
+    # p4/ci-build: the out-of-tree fpsgo_cus/fpsgo_int projects are not part
+    # of the published realme source subset (no such packages exist). The
+    # in-tree driver drivers/misc/mediatek/performance/fpsgo_v3 (mtk_fpsgo.ko,
+    # listed in mgk_64_k61_device_modules) remains built. Removing the labels
+    # also makes mgk_build_config omit the fpsgo EXT_MODULES fallback block.
+    # "//vendor/mediatek/kernel_modules/fpsgo_cus:fpsgo_cus",
+    # "//vendor/mediatek/kernel_modules/fpsgo_int:fpsgo_int",
     "//vendor/mediatek/kernel_modules/gpu:gpu",
     "//vendor/mediatek/kernel_modules/hbt_driver_cus:hbt_cus",
     "//vendor/mediatek/kernel_modules/hbt_driver:hbt_int",
