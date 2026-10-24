@@ -1032,6 +1032,11 @@ def get_overlay_modules_list():
         mgk_64_k61_device_modules.remove("kernel/oplus_cpu/cpufreq_bouncing/cpufreq_bouncing.ko")
         mgk_64_k61_device_modules.append("sound/soc/codecs/audio/codecs/frsm_i2ca_v5.2.2/snd-soc-frsm-i2ca.ko")
         mgk_64_k61_device_modules.append("sound/soc/codecs/audio/codecs/aw883xx/snd-smartpa-aw883xx.ko")
+        # p4/ci-build: the .user variant uses the separate
+        # mgk_64_k61_device_user_modules outs list; without these entries the
+        # Kleaf check fails: "kernel modules are built but not copied".
+        mgk_64_k61_device_user_modules.append("sound/soc/codecs/audio/codecs/frsm_i2ca_v5.2.2/snd-soc-frsm-i2ca.ko")
+        mgk_64_k61_device_user_modules.append("sound/soc/codecs/audio/codecs/aw883xx/snd-smartpa-aw883xx.ko")
 
     if "oplus6989v2.config" in DEFCONFIG_OVERLAYS:
         mgk_64_k61_device_modules.append("drivers/power/supply/mt6379-battery.ko")
