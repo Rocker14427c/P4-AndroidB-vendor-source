@@ -1037,10 +1037,16 @@ def get_overlay_modules_list():
     # p4/ci-build: the published flow exports DEFCONFIG_OVERLAYS="" (see
     # oplus/build/oplus_setup.sh), so the block above never runs. On k6878 the
     # oplus6878.config fragment is merged instead via the OPLUS_PLATFORM_INFO
-    # platform selector in build/bazel_mgk_rules/mgk.bzl, which builds the two
-    # smartpa codecs. Declare their outs from the same platform signal,
-    # otherwise the Kleaf "modules built but not copied" check fails.
+    # platform selector in build/bazel_mgk_rules/mgk.bzl. Replicate the same
+    # module-list delta from that platform signal:
+    #  * CONFIG_OPLUS_FEATURE_GKI_CPUFREQ_BOUNCING/ABNORMAL_FLAG are "not set"
+    #    in oplus6878.config, so their .ko files are not built and must be
+    #    dropped from outs ("Unable to find ... .ko" otherwise);
+    #  * the FS181X/AW883XX smartpa codecs are built and must be declared,
+    #    otherwise the "modules built but not copied" check fails.
     if OPLUS_PLATFORM_INFO == "k6878v1_64":
+        mgk_64_k61_device_modules.remove("kernel/oplus_cpu/oplus_overload/oplus_bsp_task_overload.ko")
+        mgk_64_k61_device_modules.remove("kernel/oplus_cpu/cpufreq_bouncing/cpufreq_bouncing.ko")
         mgk_64_k61_device_modules.append("sound/soc/codecs/audio/codecs/frsm_i2ca_v5.2.2/snd-soc-frsm-i2ca.ko")
         mgk_64_k61_device_modules.append("sound/soc/codecs/audio/codecs/aw883xx/snd-smartpa-aw883xx.ko")
 
