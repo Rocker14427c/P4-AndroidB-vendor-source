@@ -7,6 +7,7 @@ load("//kernel_device_modules-6.1:kernel/kleaf/mgk_modules.bzl",
 
 load("@mgk_info//:dict.bzl",
     "DEFCONFIG_OVERLAYS",
+    "OPLUS_PLATFORM_INFO",
 )
 
 mgk_64_k61_defconfig = "mgk_64_k61_defconfig"
@@ -1032,11 +1033,16 @@ def get_overlay_modules_list():
         mgk_64_k61_device_modules.remove("kernel/oplus_cpu/cpufreq_bouncing/cpufreq_bouncing.ko")
         mgk_64_k61_device_modules.append("sound/soc/codecs/audio/codecs/frsm_i2ca_v5.2.2/snd-soc-frsm-i2ca.ko")
         mgk_64_k61_device_modules.append("sound/soc/codecs/audio/codecs/aw883xx/snd-smartpa-aw883xx.ko")
-        # p4/ci-build: the .user variant uses the separate
-        # mgk_64_k61_device_user_modules outs list; without these entries the
-        # Kleaf check fails: "kernel modules are built but not copied".
-        mgk_64_k61_device_user_modules.append("sound/soc/codecs/audio/codecs/frsm_i2ca_v5.2.2/snd-soc-frsm-i2ca.ko")
-        mgk_64_k61_device_user_modules.append("sound/soc/codecs/audio/codecs/aw883xx/snd-smartpa-aw883xx.ko")
+
+    # p4/ci-build: the published flow exports DEFCONFIG_OVERLAYS="" (see
+    # oplus/build/oplus_setup.sh), so the block above never runs. On k6878 the
+    # oplus6878.config fragment is merged instead via the OPLUS_PLATFORM_INFO
+    # platform selector in build/bazel_mgk_rules/mgk.bzl, which builds the two
+    # smartpa codecs. Declare their outs from the same platform signal,
+    # otherwise the Kleaf "modules built but not copied" check fails.
+    if OPLUS_PLATFORM_INFO == "k6878v1_64":
+        mgk_64_k61_device_modules.append("sound/soc/codecs/audio/codecs/frsm_i2ca_v5.2.2/snd-soc-frsm-i2ca.ko")
+        mgk_64_k61_device_modules.append("sound/soc/codecs/audio/codecs/aw883xx/snd-smartpa-aw883xx.ko")
 
     if "oplus6989v2.config" in DEFCONFIG_OVERLAYS:
         mgk_64_k61_device_modules.append("drivers/power/supply/mt6379-battery.ko")
