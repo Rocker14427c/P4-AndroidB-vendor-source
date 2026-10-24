@@ -486,6 +486,11 @@ DEVCIE_MODULES_INCLUDE="-I\\$(DEVICE_MODULES_PATH)/include"
         defconfig.append("${ROOT_DIR}/" + ctx.attr.device_modules_dir + "/kernel/configs/oplus6989.config")
     elif ctx.attr.oplus_compile_platform == "k6897v1_64":
         defconfig.append("${ROOT_DIR}/" + ctx.attr.device_modules_dir + "/kernel/configs/oplus6897.config")
+    # p4/ci-build: k6878 (Dimensity 7400, RMX5110) was missing from this
+    # selector, so kernel/configs/oplus6878.config never merged and the MT6375
+    # charger stack (incl. the oplus_chg_v2 HAL symbol providers) was absent.
+    elif ctx.attr.oplus_compile_platform == "k6878v1_64":
+        defconfig.append("${ROOT_DIR}/" + ctx.attr.device_modules_dir + "/kernel/configs/oplus6878.config")
     content.append("DEFCONFIG={}".format(ctx.attr.defconfig))
     print("_mgk_build_config_impl defconfig is %s" %(defconfig))
 
