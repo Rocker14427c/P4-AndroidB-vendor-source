@@ -27,6 +27,12 @@ subdir-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/misc/mediatek/typec/tcpc/in
 endif
 subdir-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/misc/mediatek/include/mt-plat
 subdir-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/misc/mediatek/include
+# p4/ci-build: oplus_chg_comm.c includes <mtk_panel_ext.h>/<mtk_disp_notify.h>
+# whenever CONFIG_OPLUS_MTK_DRM_GKI_NOTIFY_CHG is set. The DDK build
+# (modules.bzl conditional_copt_deps for CONFIG_OPLUS_CHARGER_MTK) always adds
+# this include; the legacy Makefile only did for MT6835/6375/6379 charger
+# configs, which k6878 does not select, breaking the Kbuild module build.
+subdir-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/gpu/drm/mediatek/mediatek_v2
 
 ccflags-$(CONFIG_OPLUS_MT6835_CHARGER) += -I$(DEVICE_MODULES_PATH)/drivers/misc/mediatek/usb20/
 ccflags-$(CONFIG_OPLUS_MT6835_CHARGER) += -I$(DEVICE_MODULES_PATH)/drivers/power/supply
