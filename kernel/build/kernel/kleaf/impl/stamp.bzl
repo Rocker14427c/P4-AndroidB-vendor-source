@@ -59,7 +59,13 @@ def _write_localversion(ctx):
         stable_scmversion_cmd = _get_status_at_path(ctx, "STABLE_SCMVERSIONS", '"${KERNEL_DIR}"')
     else:
         inputs = []
-        stable_scmversion_cmd = "echo '-maybe-dirty'"
+        # p4/ci-build: the hermetic sandbox has no .git metadata, so the
+        # upstream unstamped fallback '-maybe-dirty' is the only SCM token.
+        # Emit no suffix instead, yielding the canonical GKI release string
+        # 6.1.134-android14-11-o. Harmless for module loading either way:
+        # kernel/module/version.c same_magic() ignores the whole pre-space
+        # release token when modules carry CRCs (CONFIG_MODVERSIONS=y).
+        stable_scmversion_cmd = "true"
 
     transitive_inputs = [ctx.attr.env[KernelEnvInfo].inputs]
     tools = ctx.attr.env[KernelEnvInfo].tools
